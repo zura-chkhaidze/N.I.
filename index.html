@@ -1,16 +1,20 @@
+```html
 <!DOCTYPE html>
 <html lang="ka">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ff9a9e">
     <title>სპეციალური შემოთავაზება ✨</title>
+
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -21,6 +25,65 @@
             justify-content: center;
             align-items: center;
             padding: 16px;
+        }
+
+        /* ფიქსირებული მუსიკის პლეერი */
+        .music-player {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .music-toggle {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            color: white;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(255, 75, 43, 0.25);
+            transition: transform 0.2s ease;
+        }
+
+        .music-toggle:active {
+            transform: scale(0.93);
+        }
+
+        .music-info {
+            text-align: left;
+            min-width: 0;
+        }
+
+        .music-title {
+            color: #2c3e50;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .music-status {
+            color: #777;
+            font-size: 11px;
+            margin-top: 3px;
+            white-space: nowrap;
         }
 
         .card {
@@ -45,6 +108,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -187,6 +251,7 @@
             width: 18px;
             height: 18px;
             accent-color: #ff4b2b;
+            flex-shrink: 0;
         }
 
         .loss-list {
@@ -218,110 +283,319 @@
             color: #888;
             line-height: 1.6;
         }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+                padding-top: 65px;
+            }
+
+            .music-player {
+                top: 10px;
+                right: 10px;
+                padding: 7px 11px;
+                gap: 8px;
+            }
+
+            .music-toggle {
+                width: 35px;
+                height: 35px;
+                min-width: 35px;
+            }
+
+            .card {
+                padding: 24px 18px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .step {
+                animation: none;
+            }
+
+            button {
+                transition: none;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="card" id="mainCard">
-        <div id="stepInitial" class="step">
-            <h1>მოგესალმებით, ნინო იმნაიშვილი ✨</h1>
-            <p>თქვენთვის მაქვს სპეციალური შემოთავაზება. გთხოვთ მიყვეთ მითითებებს.</p>
-            <div class="btn-group">
-                <button class="btn-yes" onclick="showYesFlow()">კარგი 😊</button>
-                <button class="btn-no" onclick="showNoFlow()">არა 😅</button>
-                <button class="btn-later" onclick="showLaterFlow()">კიდევ სცადეთ მოგვიანებით 😔</button>
+    <!-- ფიქსირებული მუსიკის პლეერი -->
+    <div class="music-player">
+        <button
+            type="button"
+            class="music-toggle"
+            id="musicToggle"
+            aria-label="მუსიკის ჩართვა"
+            aria-pressed="false"
+            title="მუსიკის ჩართვა / გამორთვა"
+        >▶</button>
+
+        <div class="music-info">
+            <div class="music-title">🎵 ფონური სიმღერა</div>
+            <div class="music-status" id="musicStatus" aria-live="polite">
+                დააჭირე ჩასართავად, სიმღერასთან ერთად უფრო სასიამოვნო იქნება!  🎶
             </div>
         </div>
 
+        <audio id="backgroundMusic" src="music.mp3" loop preload="metadata">
+            თქვენი ბრაუზერი აუდიოს ვერ უკრავს.
+        </audio>
+    </div>
+
+    <div class="card" id="mainCard">
+
+        <!-- საწყისი გვერდი -->
+        <div id="stepInitial" class="step">
+            <h1>მოგესალმებით, ნინო იმნაიშვილო ✨</h1>
+
+            <p>
+                თქვენთვის მაქვს სპეციალური შემოთავაზება.
+                გთხოვთ მიყვეთ მითითებებს.
+            </p>
+
+            <div class="btn-group">
+                <button type="button" class="btn-yes" onclick="showYesFlow()">
+                    კარგი 😊
+                </button>
+
+                <button type="button" class="btn-no" onclick="showNoFlow()">
+                    არა 😅
+                </button>
+
+                <button type="button" class="btn-later" onclick="showLaterFlow()">
+                    კიდევ სცადეთ მოგვიანებით 😔
+                </button>
+            </div>
+        </div>
+
+        <!-- თანხმობის გვერდი -->
         <div id="stepYes" class="step hidden">
             <h1>ძალიან კარგი, შევხვდეთ! 🥳</h1>
-            <p>აარჩიე შენთვის მოსახერხებელი დრო და აქტივობა (ხელმისაწვდომია 12 რიცხვიდან):</p>
+
+            <p>აარჩიე შენთვის მოსახერხებელი დრო და აქტივობა:</p>
 
             <form id="dateForm" onsubmit="sendResponse(event)">
+
                 <div class="form-group">
-                    <label class="field-label">📅 თარიღი:</label>
+                    <label class="field-label" for="dateInput">
+                        📅 თარიღი:
+                    </label>
+
                     <input type="date" id="dateInput" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="field-label">⏰ დრო:</label>
+                    <label class="field-label" for="timeInput">
+                        ⏰ დრო:
+                    </label>
+
                     <input type="time" id="timeInput" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="field-label">✨ რას გავაკეთებთ?</label>
+                    <label class="field-label">
+                        ✨ რას გავაკეთებთ?
+                    </label>
+
                     <div class="activities">
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="ყავა & სეირნობა"> ☕ ყავა & სეირნობა
+                            <input type="checkbox" name="act" value="ყავა & სეირნობა">
+                            ☕ ყავა &amp; სეირნობა
                         </label>
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="გემრიელი ვახშამი"> 🍽️ გემრიელი ვახშამი
+                            <input type="checkbox" name="act" value="გემრიელი ვახშამი">
+                            🍽️ გემრიელი ვახშამი
                         </label>
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="კინო ან თეატრი"> 🎬 კინო ან თეატრი
+                            <input type="checkbox" name="act" value="კინო ან თეატრი">
+                            🎬 კინო ან თეატრი
                         </label>
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="ხელოვნების გამოფენა"> 🎨 ხელოვნების გამოფენა
+                            <input type="checkbox" name="act" value="ხელოვნების გამოფენა">
+                            🎨 ხელოვნების გამოფენა
                         </label>
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="ბარი / მუსიკა"> 🎶 ბარი / მუსიკა
+                            <input type="checkbox" name="act" value="ბარი / მუსიკა">
+                            🎶 ბარი / მუსიკა
                         </label>
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="ექსპრომტად, დაუგეგმავად"> ✨ ექსპრომტად, დაუგეგმავად
+                            <input type="checkbox" name="act" value="ექსპრომტად, დაუგეგმავად">
+                            ✨ ექსპრომტად, დაუგეგმავად
                         </label>
+
                         <label class="activity-item">
-                            <input type="checkbox" name="act" value="Mystery Box (სიურპრიზი)"> 🎁 (Mystery Box)
+                            <input type="checkbox" name="act" value="Mystery Box (სიურპრიზი)">
+                            🎁 Mystery Box (სიურპრიზი)
                         </label>
+
                     </div>
                 </div>
 
-                <button type="submit" class="btn-yes" style="width: 100%;">ჩანიშვნა ✨</button>
+                <button type="submit" class="btn-yes" style="width: 100%;">
+                    ჩანიშვნა ✨
+                </button>
+
             </form>
         </div>
 
+        <!-- უარის გვერდი -->
         <div id="stepNo" class="step hidden">
             <h1>დარწმუნებული ხარ? 🧐</h1>
+
             <p>აი, რას კარგავ ამ არჩევანით:</p>
 
             <ul class="loss-list">
-                <li>💻 დეველოპერთან შეხვედრას, რომელმაც შენ გამო კოდი დაწერა</li>
-                <li>🚌 იმ ავტობუსით მგზავრობის ისტორიის გაგრძელებას ამჯერად თბილისში, რაც ავტომატურად ნიშნავს ახალ, MYSTERY ისტორიებს 😊</li>
-                <li>🎭 შანსს, რომ გურიისადმი ძველი მოგონებების ახალი, ბევრად პოზიტიური კადრებით ჩანაცვლება სცადოს ზ.ჩ.-მ 😅</li>
+                <li>
+                    🚌 იმ ავტობუსით მგზავრობის ისტორიის გაგრძელებას
+                    ამჯერად თბილისში, რაც ავტომატურად ნიშნავს ახალ,
+                    MYSTERY ისტორიებს 😊
+                </li>
+
+                <li>
+                    🎭 შანსს, რომ გურიისადმი ძველი მოგონებების ახალი,
+                    ბევრად პოზიტიური კადრებით ჩანაცვლება სცადოს ზ.ჩ.-მ 😅
+                </li>
+
+                <li>
+                    💻 მეტს დიდის არაფერს, უბრალოდ კაია ახალი
+                    ისტორიების დაწერა, სპონტანურად
+                </li>
             </ul>
 
-            <button class="btn-yes" onclick="showYesFlow()" style="width: 100%;">ჰოდა, მაინც 'კი'! 😉</button>
+            <button
+                type="button"
+                class="btn-yes"
+                onclick="showYesFlow()"
+                style="width: 100%;"
+            >
+                ჰოდა, მაინც 'კი'! 😉
+            </button>
         </div>
 
+        <!-- მოგვიანებით გვერდი -->
         <div id="stepLater" class="step hidden">
             <h1>მოგვიანებით უკვე მოვიდა! ⏳</h1>
-            <p>სისტემამ გადაამოწმა და დაადგინა: ახლა საუკეთესო მომენტია თარიღის ჩასანიშნად 😇</p>
-            <button class="btn-yes" onclick="showYesFlow()" style="width: 100%;">კეთილი, შევხვდეთ! ✨</button>
+
+            <p>
+                სისტემამ გადაამოწმა და დაადგინა:
+                ახლა საუკეთესო მომენტია თარიღის ჩასანიშნად 😇
+            </p>
+
+            <button
+                type="button"
+                class="btn-yes"
+                onclick="showYesFlow()"
+                style="width: 100%;"
+            >
+                კეთილი, შევხვდეთ! ✨
+            </button>
         </div>
 
+        <!-- პასუხის გაგზავნის გვერდი -->
         <div id="stepSuccess" class="step hidden">
             <h1>თითქმის მზადაა! 🎉</h1>
+
             <p>აირჩიე, რომელ აპლიკაციაში გირჩევნია პასუხის გაგზავნა:</p>
+
             <div class="btn-group">
-                <button class="btn-yes" id="btnSendWhatsApp">💬 WhatsApp-ით გაგზავნა</button>
-                <button class="btn-email" id="btnSendEmail">📧 Email-ით გაგზავნა</button>
+                <button type="button" class="btn-yes" id="btnSendWhatsApp">
+                    💬 WhatsApp-ით გაგზავნა
+                </button>
+
+                <button type="button" class="btn-email" id="btnSendEmail">
+                    📧 Email-ით გაგზავნა
+                </button>
             </div>
         </div>
 
+        <!-- ქვედა წარწერა -->
         <div class="footer-credits">
             ⚙️ მოცემულ საიტზე მუშაობდა დეველოპერთა გამოცდილი ჯგუფი.<br>
             მთავარი სულისჩამდგმელი: <strong>ზ.ჩ.</strong><br>
             ვებგვერდი შექმნილია სპეციალურად თქვენთვის ❤️
         </div>
+
     </div>
 
     <script>
+        // თარიღის მინიმალური მნიშვნელობა — დღევანდელი დღე
         window.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
-            document.getElementById('dateInput').min = `${year}-${month}-12`;
+            const day = String(today.getDate()).padStart(2, '0');
+
+            document.getElementById('dateInput').min =
+                `${year}-${month}-${day}`;
         });
+
+        // მუსიკის პლეერი
+        const music = document.getElementById('backgroundMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicStatus = document.getElementById('musicStatus');
+
+        musicToggle.addEventListener('click', async () => {
+            if (music.paused) {
+                try {
+                    await music.play();
+
+                    musicToggle.textContent = 'Ⅱ';
+                    musicToggle.setAttribute('aria-label', 'მუსიკის გამორთვა');
+                    musicToggle.setAttribute('aria-pressed', 'true');
+                    musicToggle.title = 'მუსიკის გამორთვა';
+                    musicStatus.textContent = 'მუსიკა უკრავს ♪';
+                } catch (error) {
+                    musicStatus.textContent =
+                        'ვერ ჩაირთო — შეამოწმე music.mp3';
+
+                    console.error('Music playback error:', error);
+                }
+            } else {
+                music.pause();
+            }
+        });
+
+        music.addEventListener('playing', () => {
+            musicToggle.textContent = 'Ⅱ';
+            musicToggle.setAttribute('aria-label', 'მუსიკის გამორთვა');
+            musicToggle.setAttribute('aria-pressed', 'true');
+            musicToggle.title = 'მუსიკის გამორთვა';
+            musicStatus.textContent = 'მუსიკა უკრავს ♪';
+        });
+
+        music.addEventListener('pause', () => {
+            musicToggle.textContent = '▶';
+            musicToggle.setAttribute('aria-label', 'მუსიკის ჩართვა');
+            musicToggle.setAttribute('aria-pressed', 'false');
+            musicToggle.title = 'მუსიკის ჩართვა';
+            musicStatus.textContent = 'მუსიკა შეჩერებულია';
+        });
+
+        music.addEventListener('error', () => {
+            musicStatus.textContent = 'შეამოწმე music.mp3 ფაილი';
+        });
+
+        // გვერდების გადართვა
+        function hideAll() {
+            document.getElementById('stepInitial').classList.add('hidden');
+            document.getElementById('stepYes').classList.add('hidden');
+            document.getElementById('stepNo').classList.add('hidden');
+            document.getElementById('stepLater').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.add('hidden');
+        }
 
         function showYesFlow() {
             hideAll();
@@ -338,14 +612,7 @@
             document.getElementById('stepLater').classList.remove('hidden');
         }
 
-        function hideAll() {
-            document.getElementById('stepInitial').classList.add('hidden');
-            document.getElementById('stepYes').classList.add('hidden');
-            document.getElementById('stepNo').classList.add('hidden');
-            document.getElementById('stepLater').classList.add('hidden');
-            document.getElementById('stepSuccess').classList.add('hidden');
-        }
-
+        // პასუხის მომზადება და გაგზავნის მეთოდის არჩევა
         function sendResponse(e) {
             e.preventDefault();
 
@@ -353,17 +620,28 @@
             const time = document.getElementById('timeInput').value;
 
             const selectedActivities = [];
-            document.querySelectorAll('input[name="act"]:checked').forEach(cb => {
-                selectedActivities.push(cb.value);
-            });
 
-            const text = `ნინოს პასუხი:\n📅 თარიღი: ${date}\n⏰ დრო: ${time}\n✨ აქტივობები: ${selectedActivities.join(', ') || 'არ აურჩევია'}`;
+            document.querySelectorAll('input[name="act"]:checked')
+                .forEach((checkbox) => {
+                    selectedActivities.push(checkbox.value);
+                });
 
-            const phone = "995551500320";
-            const email = "zura.chkhaidze444@gmail.com";
+            const text =
+                `ნინოს პასუხი:\n` +
+                `📅 თარიღი: ${date}\n` +
+                `⏰ დრო: ${time}\n` +
+                `✨ აქტივობები: ${selectedActivities.join(', ') || 'არ აურჩევია'}`;
 
-            const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-            const mailUrl = `mailto:${email}?subject=${encodeURIComponent("პასუხი შემოთავაზებაზე ✨")}&body=${encodeURIComponent(text)}`;
+            const phone = '995551500320';
+            const email = 'zura.chkhaidze444@gmail.com';
+
+            const waUrl =
+                `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+            const mailUrl =
+                `mailto:${email}` +
+                `?subject=${encodeURIComponent('პასუხი შემოთავაზებაზე ✨')}` +
+                `&body=${encodeURIComponent(text)}`;
 
             document.getElementById('btnSendWhatsApp').onclick = () => {
                 window.location.href = waUrl;
@@ -377,6 +655,7 @@
             document.getElementById('stepSuccess').classList.remove('hidden');
         }
     </script>
-</body>
 
+</body>
 </html>
+```
