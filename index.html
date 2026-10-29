@@ -7,6 +7,22 @@
     <meta name="theme-color" content="#ff9a9e">
     <title>სპეციალური შემოთავაზება ✨</title>
 
+    <!-- ===== Open Graph (Instagram / Facebook პრევიუ) ===== -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zura-chkhaidze.github.io/N.I./">
+    <meta property="og:title" content="სპეციალური შემოთავაზება ✨">
+    <meta property="og:description" content="ნინო იმნაიშვილისთვის განკუთვნილი სპეციალური მოწვევა">
+    <meta property="og:image" content="https://zura-chkhaidze.github.io/N.I./preview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ka_GE">
+
+    <!-- Twitter Card (დამატებით) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="სპეციალური შემოთავაზება ✨">
+    <meta name="twitter:description" content="ნინო იმნაიშვილისთვის განკუთვნილი სპეციალური მოწვევა">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=1200&h=630&fit=crop">
+
     <style>
         * {
             box-sizing: border-box;
@@ -96,7 +112,7 @@
             width: 100%;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.6);
-            position: relative; /* უკანის ღილაკისთვის */
+            position: relative;
         }
 
         .step {
@@ -114,7 +130,6 @@
             }
         }
 
-        /* ===== ახალი: უკანის ღილაკი ===== */
         .btn-back {
             position: absolute;
             top: 16px;
@@ -145,7 +160,7 @@
             font-weight: 700;
             margin-bottom: 12px;
             line-height: 1.3;
-            padding: 0 40px; /* რომ უკანის ღილაკს არ გადაეფაროს */
+            padding: 0 40px;
         }
 
         p {
@@ -410,7 +425,6 @@
 
         <!-- თანხმობის გვერდი -->
         <div id="stepYes" class="step hidden">
-            <!-- უკანის ღილაკი -->
             <button type="button" class="btn-back" onclick="goBack()" aria-label="უკან">←</button>
 
             <h1>ძალიან კარგი, შევხვდეთ! 🥳</h1>
@@ -489,7 +503,6 @@
 
         <!-- უარის გვერდი -->
         <div id="stepNo" class="step hidden">
-            <!-- უკანის ღილაკი -->
             <button type="button" class="btn-back" onclick="goBack()" aria-label="უკან">←</button>
 
             <h1>დარწმუნებული ხარ? 🧐</h1>
@@ -518,7 +531,6 @@
 
         <!-- მოგვიანებით გვერდი -->
         <div id="stepLater" class="step hidden">
-            <!-- უკანის ღილაკი -->
             <button type="button" class="btn-back" onclick="goBack()" aria-label="უკან">←</button>
 
             <h1>მოგვიანებით უკვე მოვიდა! ⏳</h1>
@@ -540,7 +552,6 @@
 
         <!-- პასუხის გაგზავნის გვერდი -->
         <div id="stepSuccess" class="step hidden">
-            <!-- უკანის ღილაკი -->
             <button type="button" class="btn-back" onclick="goBack()" aria-label="უკან">←</button>
 
             <h1>თითქმის მზადაა! 🎉</h1>
@@ -649,7 +660,6 @@
             document.getElementById('stepLater').classList.remove('hidden');
         }
 
-        // ===== ახალი: უკან დაბრუნება =====
         function goBack() {
             hideAll();
             document.getElementById('stepInitial').classList.remove('hidden');
